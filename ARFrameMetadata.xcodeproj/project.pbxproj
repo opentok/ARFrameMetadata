@@ -14,6 +14,7 @@
 		F8266FF720B7067D00A0EB14 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8266FF520B7067D00A0EB14 /* Main.storyboard */; };
 		F8266FF920B7067E00A0EB14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8266FF820B7067E00A0EB14 /* Assets.xcassets */; };
 		F8266FFC20B7067E00A0EB14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8266FFA20B7067E00A0EB14 /* LaunchScreen.storyboard */; };
+		F826700620B714E300A0EB14 /* AROpentokVideoCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F826700520B714E300A0EB14 /* AROpentokVideoCapturer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		F8266FF820B7067E00A0EB14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F8266FFB20B7067E00A0EB14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F8266FFD20B7067E00A0EB14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F826700520B714E300A0EB14 /* AROpentokVideoCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AROpentokVideoCapturer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 				F8266FF820B7067E00A0EB14 /* Assets.xcassets */,
 				F8266FFA20B7067E00A0EB14 /* LaunchScreen.storyboard */,
 				F8266FFD20B7067E00A0EB14 /* Info.plist */,
+				F826700520B714E300A0EB14 /* AROpentokVideoCapturer.swift */,
 			);
 			path = ARFrameMetadata;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F826700620B714E300A0EB14 /* AROpentokVideoCapturer.swift in Sources */,
 				F8266FF420B7067D00A0EB14 /* ViewController.swift in Sources */,
 				F8266FF020B7067C00A0EB14 /* AppDelegate.swift in Sources */,
 			);
@@ -366,7 +370,10 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = MGD69Q275W;
 				INFOPLIST_FILE = ARFrameMetadata/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tokbox.ARFrameMetadata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "52aec665-0573-461d-8802-5aac83743da5";
@@ -384,7 +391,10 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ARFrameMetadata/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tokbox.ARFrameMetadata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

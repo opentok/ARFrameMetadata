@@ -9,10 +9,21 @@
 import UIKit
 import SceneKit
 import ARKit
+import OpenTok
+
+let kApiKey = ""
+let kToken = ""
+let kSessionId = ""
+
 
 class ViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
+    
+    let capturer = AROpentokVideoCapturer()
+    var otSession: OTSession?
+    var otPublisher: OTPublisher?
+    var otSessionDelegate: ViewControllerSessionDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +39,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the scene to the view
         sceneView.scene = scene
+        sceneView.session.delegate = capturer
+        
+        otSessionDelegate = ViewControllerSessionDelegate(self)
+        otSession = OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: otSessionDelegate)
+        let pubSettings = OTPublisherSettings()
+        otPublisher = OTPublisher(delegate: self, settings: pubSettings)
+        otPublisher?.videoCapture = capturer
+        
+        otSession?.connect(withToken: kToken, error: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -76,5 +96,44 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
+    }
+    
+    func sessionConnected() {
+        otSession!.publish(otPublisher!, error: nil)
+    }
+}
+
+extension ViewController: OTPublisherDelegate {
+    func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
+        print("Publisher error: \(error)")
+    }
+}
+
+class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
+    let parent: ViewController
+    
+    init(_ parent: ViewController) {
+        self.parent = parent
+    }
+    
+    func session(_ session: OTSession, didFailWithError error: OTError) {
+        print("Session Fail")
+    }
+    
+    func session(_ session: OTSession, streamCreated stream: OTStream) {
+        print("Stream Created")
+    }
+    
+    func session(_ session: OTSession, streamDestroyed stream: OTStream) {
+        print("Stream Destroyed")
+    }
+    
+    func sessionDidConnect(_ session: OTSession) {
+        print("SessionConnected")
+        parent.sessionConnected()
+    }
+    
+    func sessionDidDisconnect(_ session: OTSession) {
+        print("Disconnect")
     }
 }
