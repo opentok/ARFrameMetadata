@@ -82,19 +82,35 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
             }
         }
         
-        let metadata = "\(frame.camera.transform.position().x):\(frame.camera.transform.position().y):\(frame.camera.transform.position().z)"
-        if let data = metadata.data(using: .ascii) {
-            print("Data size: \(data.count)")
-            var err: OTError?
-            videoFrame.setMetadata(data, error: &err)
-            if let e = err {
-                print("Error adding frame metadata: \(e.localizedDescription)")
-            }            
-        }
+        var data = Data()
+        data.append(frame.camera.transform.position().x.toBigEndianByteArray())
+        data.append(frame.camera.transform.position().y.toBigEndianByteArray())
+        data.append(frame.camera.transform.position().z.toBigEndianByteArray())
+        data.append(frame.camera.eulerAngles.x.toBigEndianByteArray())
+        data.append(frame.camera.eulerAngles.y.toBigEndianByteArray())
+        data.append(frame.camera.eulerAngles.z.toBigEndianByteArray())
         
+        var err: OTError?
+        videoFrame.setMetadata(data, error: &err)
+        if let e = err {
+            print("Error adding frame metadata: \(e.localizedDescription)")
+        }
+    
         videoCaptureConsumer!.consumeFrame(videoFrame)
         
         CVPixelBufferUnlockBaseAddress(frameBuffer, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)));
+    }
+}
+
+extension Float {
+    func toBigEndianByteArray() -> UnsafeBufferPointer<UInt8> {
+        var bytes = bitPattern.bigEndian
+        let count = MemoryLayout<UInt32>.size
+        return withUnsafePointer(to: &bytes, {
+            $0.withMemoryRebound(to: UInt8.self, capacity: count, {
+                UnsafeBufferPointer(start: $0, count: count)
+            })
+        })
     }
 }
 
