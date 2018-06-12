@@ -15,8 +15,9 @@
 		F8266FF920B7067E00A0EB14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8266FF820B7067E00A0EB14 /* Assets.xcassets */; };
 		F8266FFC20B7067E00A0EB14 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8266FFA20B7067E00A0EB14 /* LaunchScreen.storyboard */; };
 		F826700620B714E300A0EB14 /* AROpentokVideoCapturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F826700520B714E300A0EB14 /* AROpentokVideoCapturer.swift */; };
-		F82899FC20C6ACC00014C7E9 /* AROpentokVideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82899FB20C6ACC00014C7E9 /* AROpentokVideoRenderer.swift */; };
 		F854D8F120CFDD250000AB67 /* Data+fromArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = F854D8F020CFDD250000AB67 /* Data+fromArray.swift */; };
+		F854D8F320D00E220000AB67 /* ExampleVideoRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = F854D8F220D00E220000AB67 /* ExampleVideoRender.swift */; };
+		F854D8F520D00E580000AB67 /* EAGLVideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F854D8F420D00E580000AB67 /* EAGLVideoRenderer.swift */; };
 		F89AFC4520CFC8260016C510 /* SubscriberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89AFC4420CFC8260016C510 /* SubscriberViewController.swift */; };
 		F89AFC4720CFC8C90016C510 /* OTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89AFC4620CFC8C90016C510 /* OTConstants.swift */; };
 /* End PBXBuildFile section */
@@ -34,8 +35,9 @@
 		F8266FFB20B7067E00A0EB14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F8266FFD20B7067E00A0EB14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F826700520B714E300A0EB14 /* AROpentokVideoCapturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AROpentokVideoCapturer.swift; sourceTree = "<group>"; };
-		F82899FB20C6ACC00014C7E9 /* AROpentokVideoRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AROpentokVideoRenderer.swift; sourceTree = "<group>"; };
 		F854D8F020CFDD250000AB67 /* Data+fromArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+fromArray.swift"; sourceTree = "<group>"; };
+		F854D8F220D00E220000AB67 /* ExampleVideoRender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleVideoRender.swift; sourceTree = "<group>"; };
+		F854D8F420D00E580000AB67 /* EAGLVideoRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAGLVideoRenderer.swift; sourceTree = "<group>"; };
 		F89AFC4420CFC8260016C510 /* SubscriberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriberViewController.swift; sourceTree = "<group>"; };
 		F89AFC4620CFC8C90016C510 /* OTConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,11 +99,12 @@
 				F8266FFA20B7067E00A0EB14 /* LaunchScreen.storyboard */,
 				F8266FFD20B7067E00A0EB14 /* Info.plist */,
 				F826700520B714E300A0EB14 /* AROpentokVideoCapturer.swift */,
-				F82899FB20C6ACC00014C7E9 /* AROpentokVideoRenderer.swift */,
 				F8266FF320B7067D00A0EB14 /* PublisherViewController.swift */,
 				F89AFC4420CFC8260016C510 /* SubscriberViewController.swift */,
 				F89AFC4620CFC8C90016C510 /* OTConstants.swift */,
 				F854D8F020CFDD250000AB67 /* Data+fromArray.swift */,
+				F854D8F220D00E220000AB67 /* ExampleVideoRender.swift */,
+				F854D8F420D00E580000AB67 /* EAGLVideoRenderer.swift */,
 			);
 			path = ARFrameMetadata;
 			sourceTree = "<group>";
@@ -233,11 +236,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F89AFC4720CFC8C90016C510 /* OTConstants.swift in Sources */,
-				F82899FC20C6ACC00014C7E9 /* AROpentokVideoRenderer.swift in Sources */,
+				F854D8F520D00E580000AB67 /* EAGLVideoRenderer.swift in Sources */,
 				F826700620B714E300A0EB14 /* AROpentokVideoCapturer.swift in Sources */,
 				F8266FF420B7067D00A0EB14 /* PublisherViewController.swift in Sources */,
 				F8266FF020B7067C00A0EB14 /* AppDelegate.swift in Sources */,
 				F89AFC4520CFC8260016C510 /* SubscriberViewController.swift in Sources */,
+				F854D8F320D00E220000AB67 /* ExampleVideoRender.swift in Sources */,
 				F854D8F120CFDD250000AB67 /* Data+fromArray.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

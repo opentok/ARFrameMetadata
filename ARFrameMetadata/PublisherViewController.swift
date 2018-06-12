@@ -30,11 +30,12 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         sceneView.showsStatistics = true
         
         // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let scene = SCNScene(named: "art.scnassets/empty.scn")!
         
         // Set the scene to the view
         sceneView.scene = scene
         sceneView.session.delegate = capturer
+        sceneView.debugOptions = ARSCNDebugOptions.showWorldOrigin
         
         otSessionDelegate = ViewControllerSessionDelegate(self)
         otSession = OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: otSessionDelegate)
@@ -51,6 +52,7 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+        
 
         // Run the view's session
         sceneView.session.run(configuration)
@@ -131,5 +133,28 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
     
     func sessionDidDisconnect(_ session: OTSession) {
         print("Disconnect")
+    }
+    
+    func session(_ session: OTSession, receivedSignalType type: String?, from connection: OTConnection?, with string: String?) {
+        let rootNode = parent.sceneView.scene.rootNode
+        let sphereGeom = SCNSphere(radius: 1.0)
+        let newNode = SCNNode(geometry: sphereGeom)
+        let material = SCNMaterial()
+        material.diffuse.contents = UIImage(named: "art.scnassets/texture.png")
+        material.shininess = 1.0
+        sphereGeom.firstMaterial = material
+        newNode.scale = SCNVector3(0.1, 0.1, 0.1)
+        
+        // Find camera
+        let camera = rootNode.childNodes.first {
+            $0.camera != nil
+        }
+        if let cam = camera {
+            print("Camera position: \(cam.position)")
+            var nodePosition = cam.position
+            nodePosition.z -= 2
+            newNode.position = nodePosition
+            parent.sceneView.scene.rootNode.addChildNode(newNode)
+        }        
     }
 }

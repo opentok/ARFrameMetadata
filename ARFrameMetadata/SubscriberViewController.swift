@@ -11,18 +11,43 @@ import OpenTok
 import MetalKit
 
 class SubscriberViewController: UIViewController {
-    @IBOutlet weak var subView: MTKView!
+    
+    @IBOutlet weak var debugContainerView: UIView!
+    @IBOutlet weak var debugLabel: UILabel!
+    
     lazy var otSession: OTSession = {
        return OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: self)!
     }()
     
     var subscriber: OTSubscriber?
-    lazy var videoRender: AROpentokVideoRenderer = {
-        return AROpentokVideoRenderer(subView)
+    lazy var videoRender: ExampleVideoRender = {
+        let videoRender = ExampleVideoRender()
+        videoRender.delegate = self
+        return videoRender
     }()
     
     override func viewDidLoad() {
         otSession.connect(withToken: kToken, error: nil)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SubscriberViewController.viewTapped(_:)))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func viewTapped(_ recoginizer: UITapGestureRecognizer) {
+        otSession.signal(withType: "", string: "", connection: nil, error: nil)        
+    }
+}
+
+extension SubscriberViewController: ExampleVideoRenderDelegate {
+    func renderer(_ renderer: ExampleVideoRender, didReceiveFrame videoFrame: OTVideoFrame) {
+        guard let metadata = videoFrame.metadata else {
+            return
+        }
+        
+        let arr = metadata.toArray(type: Float.self)
+        DispatchQueue.main.async {
+            let arrString = "[x: \(String(format: "%.2f", arr[0])), y: \(String(format:"%.2f", arr[1])), z: \(String(format:"%.2f", arr[2]))]\n[rx: \(String(format:"%.2f", arr[3]))), ry: \(String(format:"%.2f", arr[4])), rz: \(String(format:"%.2f", arr[5])))]"
+            self.debugLabel.text = arrString
+        }
     }
 }
 
@@ -48,6 +73,11 @@ extension SubscriberViewController: OTSessionDelegate {
             return
         }
         subscriber.videoRender = videoRender
+        subscriber.view?.frame = view.bounds
+        if let subView = subscriber.view {
+            view.addSubview(subView)
+        }
+        view.bringSubview(toFront: debugContainerView)
         session.subscribe(subscriber, error: nil)
     }
 }
