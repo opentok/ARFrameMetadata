@@ -82,13 +82,14 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
             }
         }
         
-        var data = Data()
-        data.append(frame.camera.transform.position().x.toBigEndianByteArray())
-        data.append(frame.camera.transform.position().y.toBigEndianByteArray())
-        data.append(frame.camera.transform.position().z.toBigEndianByteArray())
-        data.append(frame.camera.eulerAngles.x.toBigEndianByteArray())
-        data.append(frame.camera.eulerAngles.y.toBigEndianByteArray())
-        data.append(frame.camera.eulerAngles.z.toBigEndianByteArray())
+        let data = Data(fromArray: [
+            frame.camera.transform.position().x,
+            frame.camera.transform.position().y,
+            frame.camera.transform.position().z,
+            frame.camera.eulerAngles.x,
+            frame.camera.eulerAngles.y,
+            frame.camera.eulerAngles.z
+        ])
         
         var err: OTError?
         videoFrame.setMetadata(data, error: &err)
@@ -99,18 +100,6 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
         videoCaptureConsumer!.consumeFrame(videoFrame)
         
         CVPixelBufferUnlockBaseAddress(frameBuffer, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)));
-    }
-}
-
-extension Float {
-    func toBigEndianByteArray() -> UnsafeBufferPointer<UInt8> {
-        var bytes = bitPattern.bigEndian
-        let count = MemoryLayout<UInt32>.size
-        return withUnsafePointer(to: &bytes, {
-            $0.withMemoryRebound(to: UInt8.self, capacity: count, {
-                UnsafeBufferPointer(start: $0, count: count)
-            })
-        })
     }
 }
 

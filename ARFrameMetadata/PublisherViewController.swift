@@ -11,16 +11,11 @@ import SceneKit
 import ARKit
 import OpenTok
 
-let kApiKey = ""
-let kToken = ""
-let kSessionId = ""
-
-
-class ViewController: UIViewController, ARSCNViewDelegate {
+class PublisherViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
-    let capturer = AROpentokVideoCapturer()
+    let capturer = AROpentokVideoCapturer()    
     var otSession: OTSession?
     var otPublisher: OTPublisher?
     var otSessionDelegate: ViewControllerSessionDelegate?
@@ -46,6 +41,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let pubSettings = OTPublisherSettings()
         otPublisher = OTPublisher(delegate: self, settings: pubSettings)
         otPublisher?.videoCapture = capturer
+        
         
         otSession?.connect(withToken: kToken, error: nil)
     }
@@ -103,16 +99,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
 }
 
-extension ViewController: OTPublisherDelegate {
+extension PublisherViewController: OTPublisherDelegate {
     func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
         print("Publisher error: \(error)")
     }
 }
 
 class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
-    let parent: ViewController
+    let parent: PublisherViewController
     
-    init(_ parent: ViewController) {
+    init(_ parent: PublisherViewController) {
         self.parent = parent
     }
     
