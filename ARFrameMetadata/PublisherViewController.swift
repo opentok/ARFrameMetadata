@@ -37,12 +37,13 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.delegate = capturer
         sceneView.debugOptions = ARSCNDebugOptions.showWorldOrigin
         
+        capturer.arScnView = sceneView
+        
         otSessionDelegate = ViewControllerSessionDelegate(self)
         otSession = OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: otSessionDelegate)
         let pubSettings = OTPublisherSettings()
         otPublisher = OTPublisher(delegate: self, settings: pubSettings)
         otPublisher?.videoCapture = capturer
-        
         
         otSession?.connect(withToken: kToken, error: nil)
     }
@@ -149,8 +150,18 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
         let camera = rootNode.childNodes.first {
             $0.camera != nil
         }
-        if let cam = camera {            
+        if let cam = camera {
             newNode.simdPosition = cam.simdWorldFront * 2
+            
+            if let touchXyStr = string?.split(separator: ":"),
+                let x = Float(touchXyStr[0]),
+                let y = Float(touchXyStr[1])
+            {
+                let z = parent.sceneView.projectPoint(newNode.position).z
+                let p = parent.sceneView.unprojectPoint(SCNVector3(x, y, z))
+                newNode.position = p
+            }
+            
             parent.sceneView.scene.rootNode.addChildNode(newNode)
         }        
     }

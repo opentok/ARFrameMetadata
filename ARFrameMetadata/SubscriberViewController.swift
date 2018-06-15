@@ -33,7 +33,8 @@ class SubscriberViewController: UIViewController {
     }
     
     @objc func viewTapped(_ recoginizer: UITapGestureRecognizer) {
-        otSession.signal(withType: "", string: "", connection: nil, error: nil)        
+        let loc = recoginizer.location(in: videoRender)
+        otSession.signal(withType: "xy", string: "\(loc.x):\(loc.y)", connection: nil, error: nil)
     }
 }
 
@@ -73,10 +74,8 @@ extension SubscriberViewController: OTSessionDelegate {
             return
         }
         subscriber.videoRender = videoRender
-        subscriber.view?.frame = view.bounds
-        if let subView = subscriber.view {
-            view.addSubview(subView)
-        }
+        videoRender.frame = view.bounds
+        view.addSubview(videoRender)
         view.bringSubview(toFront: debugContainerView)
         session.subscribe(subscriber, error: nil)
     }
