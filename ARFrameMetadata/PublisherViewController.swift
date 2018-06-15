@@ -149,11 +149,8 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
         let camera = rootNode.childNodes.first {
             $0.camera != nil
         }
-        if let cam = camera {
-            print("Camera position: \(cam.position)")
-            var nodePosition = cam.position
-            nodePosition.z -= 2
-            newNode.position = nodePosition
+        if let cam = camera {            
+            newNode.simdPosition = cam.simdWorldFront * 2
             parent.sceneView.scene.rootNode.addChildNode(newNode)
         }        
     }
