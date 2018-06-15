@@ -16,6 +16,7 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
     fileprivate let videoFrame: OTVideoFrame
     var frameW: UInt32 = 0
     var frameH: UInt32 = 0
+    var arScnView: ARSCNView?
     
     override init() {
         videoFrame = OTVideoFrame(format: OTVideoFormat(nv12WithWidth: frameW, height: frameH))
@@ -42,7 +43,7 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
     }
     
     func captureSettings(_ videoFormat: OTVideoFormat) -> Int32 {
-        videoFormat.pixelFormat = .NV12
+        videoFormat.pixelFormat = .ARGB
         videoFormat.imageHeight = frameH
         videoFormat.imageWidth = frameW
         
@@ -52,15 +53,48 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
     fileprivate func updateCaptureFormat(width w: UInt32, height h: UInt32) {
         frameW = w
         frameH = h
-        videoFrame.format = OTVideoFormat.init(nv12WithWidth: w, height: h)
+        videoFrame.format = OTVideoFormat(argbWithWidth: w, height: h)
+    }
+    
+    func pixelBuffer (forImage image:CGImage) -> CVPixelBuffer? {
+        
+        
+        let frameSize = CGSize(width: image.width, height: image.height)
+        
+        var pixelBuffer:CVPixelBuffer? = nil
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(frameSize.width), Int(frameSize.height), kCVPixelFormatType_32BGRA , nil, &pixelBuffer)
+        
+        if status != kCVReturnSuccess {
+            return nil
+            
+        }
+        
+        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags.init(rawValue: 0))
+        let data = CVPixelBufferGetBaseAddress(pixelBuffer!)
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue)
+        let context = CGContext(data: data, width: Int(frameSize.width), height: Int(frameSize.height), bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer!), space: rgbColorSpace, bitmapInfo: bitmapInfo.rawValue)
+        
+        
+        context?.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        
+        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: 0))
+        
+        return pixelBuffer
+        
     }
     
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        if !captureStarted {
+        guard captureStarted,
+            let scnView = arScnView,
+            let cgImage = scnView.snapshot().cgImage,
+            let frameBuffer = pixelBuffer(forImage: cgImage)
+        else {
             return
         }
         
-        let frameBuffer = frame.capturedImage
+        return
+        
         let w = UInt32(CVPixelBufferGetWidth(frameBuffer))
         let h = UInt32(CVPixelBufferGetHeight(frameBuffer))
         
@@ -81,7 +115,7 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
                 videoFrame.planes?.addPointer(CVPixelBufferGetBaseAddressOfPlane(frameBuffer, idx))
             }
         }
-        
+        /*
         let data = Data(fromArray: [
             frame.camera.transform.position().x,
             frame.camera.transform.position().y,
@@ -96,7 +130,7 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
         if let e = err {
             print("Error adding frame metadata: \(e.localizedDescription)")
         }
-    
+        */
         videoCaptureConsumer!.consumeFrame(videoFrame)
         
         CVPixelBufferUnlockBaseAddress(frameBuffer, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)));

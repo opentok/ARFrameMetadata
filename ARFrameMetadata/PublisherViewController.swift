@@ -15,7 +15,7 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
-    let capturer = AROpentokVideoCapturer()    
+    var capturer: SCNViewVideoCapture?
     var otSession: OTSession?
     var otPublisher: OTPublisher?
     var otSessionDelegate: ViewControllerSessionDelegate?
@@ -34,11 +34,9 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the scene to the view
         sceneView.scene = scene
-        sceneView.session.delegate = capturer
         sceneView.debugOptions = ARSCNDebugOptions.showWorldOrigin
         
-        capturer.arScnView = sceneView
-        
+        capturer = SCNViewVideoCapture(sceneView: sceneView)
         otSessionDelegate = ViewControllerSessionDelegate(self)
         otSession = OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: otSessionDelegate)
         let pubSettings = OTPublisherSettings()
@@ -53,7 +51,6 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-        
 
         // Run the view's session
         sceneView.session.run(configuration)

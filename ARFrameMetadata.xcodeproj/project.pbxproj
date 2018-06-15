@@ -20,6 +20,7 @@
 		F854D8F520D00E580000AB67 /* EAGLVideoRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F854D8F420D00E580000AB67 /* EAGLVideoRenderer.swift */; };
 		F89AFC4520CFC8260016C510 /* SubscriberViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89AFC4420CFC8260016C510 /* SubscriberViewController.swift */; };
 		F89AFC4720CFC8C90016C510 /* OTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89AFC4620CFC8C90016C510 /* OTConstants.swift */; };
+		F8EDE04A20D3E1BD00753C0B /* SCNViewVideoCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EDE04920D3E1BD00753C0B /* SCNViewVideoCapture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		F854D8F420D00E580000AB67 /* EAGLVideoRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAGLVideoRenderer.swift; sourceTree = "<group>"; };
 		F89AFC4420CFC8260016C510 /* SubscriberViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriberViewController.swift; sourceTree = "<group>"; };
 		F89AFC4620CFC8C90016C510 /* OTConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTConstants.swift; sourceTree = "<group>"; };
+		F8EDE04920D3E1BD00753C0B /* SCNViewVideoCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNViewVideoCapture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				F854D8F020CFDD250000AB67 /* Data+fromArray.swift */,
 				F854D8F220D00E220000AB67 /* ExampleVideoRender.swift */,
 				F854D8F420D00E580000AB67 /* EAGLVideoRenderer.swift */,
+				F8EDE04920D3E1BD00753C0B /* SCNViewVideoCapture.swift */,
 			);
 			path = ARFrameMetadata;
 			sourceTree = "<group>";
@@ -235,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EDE04A20D3E1BD00753C0B /* SCNViewVideoCapture.swift in Sources */,
 				F89AFC4720CFC8C90016C510 /* OTConstants.swift in Sources */,
 				F854D8F520D00E580000AB67 /* EAGLVideoRenderer.swift in Sources */,
 				F826700620B714E300A0EB14 /* AROpentokVideoCapturer.swift in Sources */,
