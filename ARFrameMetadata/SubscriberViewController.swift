@@ -33,7 +33,7 @@ class SubscriberViewController: UIViewController {
     }
     
     @objc func viewTapped(_ recoginizer: UITapGestureRecognizer) {
-        let loc = recoginizer.location(in: videoRender)
+        let loc = recoginizer.location(in: view)
         otSession.signal(withType: "xy", string: "\(loc.x):\(loc.y)", connection: nil, error: nil)
     }
 }

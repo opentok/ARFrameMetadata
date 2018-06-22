@@ -151,6 +151,7 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
             newNode.simdPosition = cam.simdWorldFront * 2
             
             if let touchXyStr = string?.split(separator: ":"),
+                touchXyStr.count == 2,
                 let x = Float(touchXyStr[0]),
                 let y = Float(touchXyStr[1])
             {
@@ -160,6 +161,7 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
             }
             
             parent.sceneView.scene.rootNode.addChildNode(newNode)
+            parent.sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
         }        
     }
 }
