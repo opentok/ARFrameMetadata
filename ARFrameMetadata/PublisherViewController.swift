@@ -135,15 +135,10 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
     
     func session(_ session: OTSession, receivedSignalType type: String?, from connection: OTConnection?, with string: String?) {
         let rootNode = parent.sceneView.scene.rootNode
-        let sphereGeom = SCNSphere(radius: 1.0)
-        let newNode = SCNNode(geometry: sphereGeom)
-        let material = SCNMaterial()
-        material.diffuse.contents = UIImage(named: "art.scnassets/texture.png")
-        material.shininess = 1.0
-        sphereGeom.firstMaterial = material
+        let arrowScene = SCNScene(named: "art.scnassets/arrow.scn")!
+        let newNode = arrowScene.rootNode.childNode(withName: "arrow", recursively: false)!        
         newNode.scale = SCNVector3(0.1, 0.1, 0.1)
         
-        // Find camera
         let camera = rootNode.childNodes.first {
             $0.camera != nil
         }
@@ -158,6 +153,7 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
                 let z = parent.sceneView.projectPoint(newNode.position).z
                 let p = parent.sceneView.unprojectPoint(SCNVector3(x, y, z))
                 newNode.position = p
+                print("Cam: \(camera!.eulerAngles)")
             }
             
             parent.sceneView.scene.rootNode.addChildNode(newNode)

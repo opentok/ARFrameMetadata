@@ -54,7 +54,7 @@ extension SubscriberViewController: ExampleVideoRenderDelegate {
 
 extension SubscriberViewController: OTSessionDelegate {
     func sessionDidConnect(_ session: OTSession) {
-        
+        self.debugLabel.text = "Connected to session"
     }
     
     func sessionDidDisconnect(_ session: OTSession) {
@@ -62,7 +62,7 @@ extension SubscriberViewController: OTSessionDelegate {
     }
     
     func session(_ session: OTSession, didFailWithError error: OTError) {
-        
+        self.debugLabel.text = "Session error"
     }
     
     func session(_ session: OTSession, streamDestroyed stream: OTStream) {
@@ -83,6 +83,7 @@ extension SubscriberViewController: OTSessionDelegate {
 
 extension SubscriberViewController: OTSubscriberDelegate {
     func subscriberDidConnect(toStream subscriber: OTSubscriberKit) {
+        self.debugLabel.text = "Subscribing"
     }
     
     func subscriber(_ subscriber: OTSubscriberKit, didFailWithError error: OTError) {
