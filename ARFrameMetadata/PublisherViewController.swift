@@ -19,6 +19,7 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
     var otSession: OTSession?
     var otPublisher: OTPublisher?
     var otSessionDelegate: ViewControllerSessionDelegate?
+    var arrowNode: SCNNode?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +37,11 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene = scene
         sceneView.debugOptions = ARSCNDebugOptions.showWorldOrigin
         
+        let arrowScene = SCNScene(named: "art.scnassets/arrow.scn")!
+        arrowNode = arrowScene.rootNode.childNode(withName: "arrow", recursively: false)!
+        
         capturer = SCNViewVideoCapture(sceneView: sceneView)
+        capturer?.delegate = self
         otSessionDelegate = ViewControllerSessionDelegate(self)
         otSession = OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: otSessionDelegate)
         let pubSettings = OTPublisherSettings()
@@ -99,6 +104,32 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
     }
 }
 
+extension PublisherViewController: SCNViewVideoCaptureDelegate {
+    func prepare(videoFrame: OTVideoFrame) {
+        let cameraNode = sceneView.scene.rootNode.childNodes.first {
+            $0.camera != nil
+        }
+        if let node = cameraNode, let cam = node.camera {
+            let data = Data(fromArray: [
+                node.simdPosition.x,
+                node.simdPosition.y,
+                node.simdPosition.z,
+                node.eulerAngles.x,
+                node.eulerAngles.y,
+                node.eulerAngles.z,
+                Float(cam.zNear),
+                Float(cam.fieldOfView)
+                ])
+            
+            var err: OTError?
+            videoFrame.setMetadata(data, error: &err)
+            if let e = err {
+                print("Error adding frame metadata: \(e.localizedDescription)")
+            }
+        }
+    }
+}
+
 extension PublisherViewController: OTPublisherDelegate {
     func publisher(_ publisher: OTPublisherKit, didFailWithError error: OTError) {
         print("Publisher error: \(error)")
@@ -134,30 +165,28 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
     }
     
     func session(_ session: OTSession, receivedSignalType type: String?, from connection: OTConnection?, with string: String?) {
-        let rootNode = parent.sceneView.scene.rootNode
-        let arrowScene = SCNScene(named: "art.scnassets/arrow.scn")!
-        let newNode = arrowScene.rootNode.childNode(withName: "arrow", recursively: false)!        
+        print("Received Signal: \(string)")
+        
+        let newNode = parent.arrowNode?.clone() ?? SCNNode()
         newNode.scale = SCNVector3(0.1, 0.1, 0.1)
         
-        let camera = rootNode.childNodes.first {
-            $0.camera != nil
-        }
-        if let cam = camera {
-            newNode.simdPosition = cam.simdWorldFront * 2
-            
-            if let touchXyStr = string?.split(separator: ":"),
-                touchXyStr.count == 2,
-                let x = Float(touchXyStr[0]),
-                let y = Float(touchXyStr[1])
-            {
+        if let nodePos = string?.split(separator: ":"),
+            nodePos.count == 5,
+            let newNodeX = Float(nodePos[0]),
+            let newNodeY = Float(nodePos[1]),
+            let newNodeZ = Float(nodePos[2]),
+            let x = Float(nodePos[3]),
+            let y = Float(nodePos[4])
+        {
+                newNode.simdPosition.x = newNodeX
+                newNode.simdPosition.y = newNodeY
+                newNode.simdPosition.z = newNodeZ
                 let z = parent.sceneView.projectPoint(newNode.position).z
                 let p = parent.sceneView.unprojectPoint(SCNVector3(x, y, z))
                 newNode.position = p
-                print("Cam: \(camera!.eulerAngles)")
-            }
-            
-            parent.sceneView.scene.rootNode.addChildNode(newNode)
-            parent.sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
+                
+                parent.sceneView.scene.rootNode.addChildNode(newNode)
+                parent.sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
         }        
     }
 }

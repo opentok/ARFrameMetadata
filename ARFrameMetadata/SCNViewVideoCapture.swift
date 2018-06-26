@@ -11,6 +11,10 @@ import AVFoundation
 import SceneKit
 import MetalKit
 
+protocol SCNViewVideoCaptureDelegate {
+    func prepare(videoFrame: OTVideoFrame)
+}
+
 class SCNViewVideoCapture: NSObject, OTVideoCapture {
     var videoCaptureConsumer: OTVideoCaptureConsumer?
     
@@ -24,6 +28,8 @@ class SCNViewVideoCapture: NSObject, OTVideoCapture {
     var caLink: CADisplayLink?
     
     var capturing = false
+    
+    var delegate :SCNViewVideoCaptureDelegate?
     
     fileprivate var pixelBuffer: CVPixelBuffer?
     fileprivate var videoFrame = OTVideoFrame(format: OTVideoFormat(argbWithWidth: 0, height: 0))
@@ -107,6 +113,11 @@ class SCNViewVideoCapture: NSObject, OTVideoCapture {
         
         videoFrame.clearPlanes()
         videoFrame.planes?.addPointer(CVPixelBufferGetBaseAddress(ref))
+        
+        if let delegate = self.delegate {
+            delegate.prepare(videoFrame: videoFrame)
+        }
+        
         videoCaptureConsumer?.consumeFrame(videoFrame)
         
         CVPixelBufferUnlockBaseAddress(ref, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))

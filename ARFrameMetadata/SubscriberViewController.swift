@@ -9,6 +9,7 @@
 import UIKit
 import OpenTok
 import MetalKit
+import SceneKit
 
 class SubscriberViewController: UIViewController {
     
@@ -26,6 +27,8 @@ class SubscriberViewController: UIViewController {
         return videoRender
     }()
     
+    var lastNode: SCNNode?
+    
     override func viewDidLoad() {
         otSession.connect(withToken: kToken, error: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SubscriberViewController.viewTapped(_:)))
@@ -33,8 +36,13 @@ class SubscriberViewController: UIViewController {
     }
     
     @objc func viewTapped(_ recoginizer: UITapGestureRecognizer) {
+        guard let lastCamera = lastNode else {
+            return
+        }
         let loc = recoginizer.location(in: view)
-        otSession.signal(withType: "xy", string: "\(loc.x):\(loc.y)", connection: nil, error: nil)
+        let nodePos = lastCamera.simdWorldFront * 2
+        
+        otSession.signal(withType: "nodepos", string: "\(nodePos.x):\(nodePos.y):\(nodePos.z):\(loc.x):\(loc.y)", connection: nil, error: nil)
     }
 }
 
@@ -46,8 +54,24 @@ extension SubscriberViewController: ExampleVideoRenderDelegate {
         
         let arr = metadata.toArray(type: Float.self)
         DispatchQueue.main.async {
-            let arrString = "[x: \(String(format: "%.2f", arr[0])), y: \(String(format:"%.2f", arr[1])), z: \(String(format:"%.2f", arr[2]))]\n[rx: \(String(format:"%.2f", arr[3]))), ry: \(String(format:"%.2f", arr[4])), rz: \(String(format:"%.2f", arr[5])))]"
+            let arrString = "[x: \(String(format: "%.2f", arr[0])), y: \(String(format:"%.2f", arr[1])), z: \(String(format:"%.2f", arr[2]))]\n[rx: \(String(format:"%.2f", arr[3])), ry: \(String(format:"%.2f", arr[4])), rz: \(String(format:"%.2f", arr[5]))]"
             self.debugLabel.text = arrString
+            
+            let cameraNode = SCNNode()
+            cameraNode.simdPosition.x = arr[0]
+            cameraNode.simdPosition.y = arr[1]
+            cameraNode.simdPosition.z = arr[2]
+            
+            cameraNode.eulerAngles.x = arr[3]
+            cameraNode.eulerAngles.y = arr[4]
+            cameraNode.eulerAngles.z = arr[5]
+            
+            cameraNode.camera = SCNCamera()
+            cameraNode.camera?.zFar = 1000
+            cameraNode.camera?.zNear = Double(arr[6])
+            cameraNode.camera?.fieldOfView = CGFloat(arr[7])
+            
+            self.lastNode = cameraNode
         }
     }
 }
