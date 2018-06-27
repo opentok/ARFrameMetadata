@@ -69,9 +69,9 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
     }
     
     fileprivate func deleteAllObjects() {
-        let nodes = sceneView.scene.rootNode.childNodes.filter { return $0.name == "ball" || $0.name == "star" }
+        let nodes = sceneView.scene.rootNode.childNodes.filter { return $0.name == "ball" || $0.name == "star" || $0.name == "marker" }
         nodes.forEach({ node in
-            node.removeFromParentNode()            
+            node.removeFromParentNode()
         })
     }
     
@@ -137,18 +137,23 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
             let z = sceneView.projectPoint(newNode.position).z
             let p = sceneView.unprojectPoint(SCNVector3(x, y, z))
             newNode.position = p
-            /*
-            newNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: newNode, options: nil))
-            newNode.physicsBody?.isAffectedByGravity = false
-            newNode.physicsBody?.friction = 0
-            newNode.physicsBody?.restitution = 1
-            newNode.physicsBody?.angularDamping = 1
-            newNode.physicsBody?.mass = 2*/
-            
             newNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(Float.pi * 2), z: 0, duration: 3)))
             
             sceneView.scene.rootNode.addChildNode(newNode)
             sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
+            
+            // Add line
+            let lineNode = SCNNode(geometry: SCNCylinder(radius: 0.005, height: CGFloat(abs(newNode.position.y))))
+            lineNode.name = "marker"
+            lineNode.geometry?.firstMaterial = SCNMaterial()
+            lineNode.geometry?.firstMaterial?.diffuse.contents = UIColor.gray
+            lineNode.position = newNode.position
+            if newNode.position.y > 0 {
+                lineNode.position.y -= abs(lineNode.position.y) / 2
+            } else {
+                lineNode.position.y += abs(lineNode.position.y) / 2
+            }
+            sceneView.scene.rootNode.addChildNode(lineNode)
         }
     }
 }
