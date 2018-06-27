@@ -19,7 +19,8 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
     var otSession: OTSession?
     var otPublisher: OTPublisher?
     var otSessionDelegate: ViewControllerSessionDelegate?
-    var arrowNode: SCNNode?
+    var starNode: SCNNode?
+    var ballNode: SCNNode?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +30,7 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        sceneView.autoenablesDefaultLighting = true
         
         // Create a new scene
         let scene = SCNScene(named: "art.scnassets/empty.scn")!
@@ -37,8 +39,9 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene = scene
         sceneView.debugOptions = ARSCNDebugOptions.showWorldOrigin
         
-        let arrowScene = SCNScene(named: "art.scnassets/arrow.scn")!
-        arrowNode = arrowScene.rootNode.childNode(withName: "arrow", recursively: false)!
+        let markerScene = SCNScene(named: "art.scnassets/marker.scn")!
+        starNode = markerScene.rootNode.childNode(withName: "star", recursively: false)!
+        ballNode = markerScene.rootNode.childNode(withName: "ball", recursively: false)!
         
         capturer = SCNViewVideoCapture(sceneView: sceneView)
         capturer?.delegate = self
@@ -49,58 +52,104 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         otPublisher?.videoCapture = capturer
         
         otSession?.connect(withToken: kToken, error: nil)
+        
+        becomeFirstResponder()
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        get {
+            return true
+        }
+    }
+    
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            deleteAllObjects()
+        }
+    }
+    
+    fileprivate func deleteAllObjects() {
+        let nodes = sceneView.scene.rootNode.childNodes.filter { return $0.name == "ball" || $0.name == "star" }
+        nodes.forEach({ node in
+            node.removeFromParentNode()            
+        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-
-        // Run the view's session
         sceneView.session.run(configuration)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        // Pause the view's session
         sceneView.session.pause()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
-
-    // MARK: - ARSCNViewDelegate
-    
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
-    }
-*/
-    
     func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
-        
     }
     
     func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
     }
     
     func sessionConnected() {
         otSession!.publish(otPublisher!, error: nil)
+    }
+    
+    func addNewNode(withString string: String) {
+        guard let star = starNode,
+            let ball = ballNode,
+            let ballGeom = ball.clone().geometry?.copy() as? SCNGeometry,
+            let starGeom = star.clone().geometry?.copy() as? SCNGeometry else {
+            print("Error getting models.")
+            return
+        }
+        
+        let newNode: SCNNode = {
+            if arc4random_uniform(10) % 2 == 0 {
+                let node = SCNNode(geometry: ballGeom)
+                node.scale = SCNVector3(0.05, 0.05, 0.05)
+                node.name = "ball"
+                return node
+            } else {
+                let node = SCNNode(geometry: starGeom)
+                node.scale = SCNVector3(0.001, 0.001, 0.001)
+                node.name = "star"
+                return node
+            }
+        }()
+        
+        let nodePos = string.split(separator: ":")
+        if  nodePos.count == 5,
+            let newNodeX = Float(nodePos[0]),
+            let newNodeY = Float(nodePos[1]),
+            let newNodeZ = Float(nodePos[2]),
+            let x = Float(nodePos[3]),
+            let y = Float(nodePos[4])
+        {
+            newNode.simdPosition.x = newNodeX
+            newNode.simdPosition.y = newNodeY
+            newNode.simdPosition.z = newNodeZ
+            
+            let z = sceneView.projectPoint(newNode.position).z
+            let p = sceneView.unprojectPoint(SCNVector3(x, y, z))
+            newNode.position = p
+            /*
+            newNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: newNode, options: nil))
+            newNode.physicsBody?.isAffectedByGravity = false
+            newNode.physicsBody?.friction = 0
+            newNode.physicsBody?.restitution = 1
+            newNode.physicsBody?.angularDamping = 1
+            newNode.physicsBody?.mass = 2*/
+            
+            newNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(Float.pi * 2), z: 0, duration: 3)))
+            
+            sceneView.scene.rootNode.addChildNode(newNode)
+            sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
+        }
     }
 }
 
@@ -165,28 +214,11 @@ class ViewControllerSessionDelegate : NSObject, OTSessionDelegate {
     }
     
     func session(_ session: OTSession, receivedSignalType type: String?, from connection: OTConnection?, with string: String?) {
-        print("Received Signal: \(string)")
-        
-        let newNode = parent.arrowNode?.clone() ?? SCNNode()
-        newNode.scale = SCNVector3(0.1, 0.1, 0.1)
-        
-        if let nodePos = string?.split(separator: ":"),
-            nodePos.count == 5,
-            let newNodeX = Float(nodePos[0]),
-            let newNodeY = Float(nodePos[1]),
-            let newNodeZ = Float(nodePos[2]),
-            let x = Float(nodePos[3]),
-            let y = Float(nodePos[4])
-        {
-                newNode.simdPosition.x = newNodeX
-                newNode.simdPosition.y = newNodeY
-                newNode.simdPosition.z = newNodeZ
-                let z = parent.sceneView.projectPoint(newNode.position).z
-                let p = parent.sceneView.unprojectPoint(SCNVector3(x, y, z))
-                newNode.position = p
-                
-                parent.sceneView.scene.rootNode.addChildNode(newNode)
-                parent.sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
+        print("Received Signal\ntype:\(type ?? "nil") - \(string ?? "nil")")
+        if type == "newNode", let coords = string{
+            parent.addNewNode(withString: coords)
+        } else if type == "deleteNodes" {
+            parent.deleteAllObjects()
         }        
     }
 }

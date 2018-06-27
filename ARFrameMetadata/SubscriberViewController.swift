@@ -33,6 +33,20 @@ class SubscriberViewController: UIViewController {
         otSession.connect(withToken: kToken, error: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SubscriberViewController.viewTapped(_:)))
         view.addGestureRecognizer(tapGesture)
+        
+        becomeFirstResponder()
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        get {
+            return true
+        }
+    }
+    
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        if motion == .motionShake {
+            otSession.signal(withType: "deleteNodes", string: nil, connection: nil, error: nil)
+        }
     }
     
     @objc func viewTapped(_ recoginizer: UITapGestureRecognizer) {
@@ -42,7 +56,7 @@ class SubscriberViewController: UIViewController {
         let loc = recoginizer.location(in: view)
         let nodePos = lastCamera.simdWorldFront * 2
         
-        otSession.signal(withType: "nodepos", string: "\(nodePos.x):\(nodePos.y):\(nodePos.z):\(loc.x):\(loc.y)", connection: nil, error: nil)
+        otSession.signal(withType: "newNode", string: "\(nodePos.x):\(nodePos.y):\(nodePos.z):\(loc.x):\(loc.y)", connection: nil, error: nil)
     }
 }
 
