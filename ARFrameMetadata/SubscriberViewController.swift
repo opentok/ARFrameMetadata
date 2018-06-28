@@ -11,6 +11,9 @@ import OpenTok
 import MetalKit
 import SceneKit
 
+fileprivate let FIXED_ANNOTATION_DEPTH = 2
+fileprivate let CAMERA_DEFAULT_ZFAR = 1000
+
 class SubscriberViewController: UIViewController {
     
     @IBOutlet weak var debugContainerView: UIView!
@@ -54,7 +57,7 @@ class SubscriberViewController: UIViewController {
             return
         }
         let loc = recoginizer.location(in: view)
-        let nodePos = lastCamera.simdWorldFront * 2
+        let nodePos = lastCamera.simdWorldFront * FIXED_ANNOTATION_DEPTH
         
         otSession.signal(withType: "newNode", string: "\(nodePos.x):\(nodePos.y):\(nodePos.z):\(loc.x):\(loc.y)", connection: nil, error: nil)
     }
@@ -81,7 +84,7 @@ extension SubscriberViewController: ExampleVideoRenderDelegate {
             cameraNode.eulerAngles.z = arr[5]
             
             cameraNode.camera = SCNCamera()
-            cameraNode.camera?.zFar = 1000
+            cameraNode.camera?.zFar = CAMERA_DEFAULT_ZFAR
             cameraNode.camera?.zNear = Double(arr[6])
             cameraNode.camera?.fieldOfView = CGFloat(arr[7])
             

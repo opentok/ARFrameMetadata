@@ -115,22 +115,6 @@ class AROpentokVideoCapturer : NSObject, OTVideoCapture, ARSessionDelegate {
                 videoFrame.planes?.addPointer(CVPixelBufferGetBaseAddressOfPlane(frameBuffer, idx))
             }
         }
-        /*
-        let data = Data(fromArray: [
-            frame.camera.transform.position().x,
-            frame.camera.transform.position().y,
-            frame.camera.transform.position().z,
-            frame.camera.eulerAngles.x,
-            frame.camera.eulerAngles.y,
-            frame.camera.eulerAngles.z
-        ])
-        
-        var err: OTError?
-        videoFrame.setMetadata(data, error: &err)
-        if let e = err {
-            print("Error adding frame metadata: \(e.localizedDescription)")
-        }
-        */
         videoCaptureConsumer!.consumeFrame(videoFrame)
         
         CVPixelBufferUnlockBaseAddress(frameBuffer, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)));
