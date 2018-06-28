@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9923EAF6BD6D354CCC7A0D71 /* Pods_ARFrameMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7CA9CBE79063FE982937D8 /* Pods_ARFrameMetadata.framework */; };
 		F8266FF020B7067C00A0EB14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8266FEF20B7067C00A0EB14 /* AppDelegate.swift */; };
 		F8266FF220B7067D00A0EB14 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = F8266FF120B7067D00A0EB14 /* art.scnassets */; };
 		F8266FF420B7067D00A0EB14 /* PublisherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8266FF320B7067D00A0EB14 /* PublisherViewController.swift */; };
@@ -23,6 +24,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A7CA9CBE79063FE982937D8 /* Pods_ARFrameMetadata.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ARFrameMetadata.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		17B1798930EF1DC67569654C /* Pods-ARFrameMetadata.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARFrameMetadata.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ARFrameMetadata/Pods-ARFrameMetadata.debug.xcconfig"; sourceTree = "<group>"; };
+		8139F6698F71C07B436B3CBB /* Pods-ARFrameMetadata.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARFrameMetadata.release.xcconfig"; path = "Pods/Target Support Files/Pods-ARFrameMetadata/Pods-ARFrameMetadata.release.xcconfig"; sourceTree = "<group>"; };
 		F8266FEC20B7067C00A0EB14 /* ARFrameMetadata.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARFrameMetadata.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8266FEF20B7067C00A0EB14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F8266FF120B7067D00A0EB14 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -45,17 +49,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9923EAF6BD6D354CCC7A0D71 /* Pods_ARFrameMetadata.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7ADF075AFBBDFEB45816860B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0A7CA9CBE79063FE982937D8 /* Pods_ARFrameMetadata.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A98FB5832E65635CC1BED13F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				17B1798930EF1DC67569654C /* Pods-ARFrameMetadata.debug.xcconfig */,
+				8139F6698F71C07B436B3CBB /* Pods-ARFrameMetadata.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		F8266FE320B7067C00A0EB14 = {
 			isa = PBXGroup;
 			children = (
 				F8266FEE20B7067C00A0EB14 /* ARFrameMetadata */,
 				F8266FED20B7067C00A0EB14 /* Products */,
+				A98FB5832E65635CC1BED13F /* Pods */,
+				7ADF075AFBBDFEB45816860B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,6 +119,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F826700020B7067E00A0EB14 /* Build configuration list for PBXNativeTarget "ARFrameMetadata" */;
 			buildPhases = (
+				98B8F017D738D08784475F1C /* [CP] Check Pods Manifest.lock */,
 				F8266FE820B7067C00A0EB14 /* Sources */,
 				F8266FE920B7067C00A0EB14 /* Frameworks */,
 				F8266FEA20B7067C00A0EB14 /* Resources */,
@@ -154,6 +179,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		98B8F017D738D08784475F1C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ARFrameMetadata-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F8266FE820B7067C00A0EB14 /* Sources */ = {
@@ -310,19 +356,22 @@
 		};
 		F826700120B7067E00A0EB14 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 17B1798930EF1DC67569654C /* Pods-ARFrameMetadata.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = MGD69Q275W;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y6ZF2U3QJC;
 				INFOPLIST_FILE = ARFrameMetadata/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tokbox.ARFrameMetadata;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "52aec665-0573-461d-8802-5aac83743da5";
-				PROVISIONING_PROFILE_SPECIFIER = "RPC Dev";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -330,11 +379,14 @@
 		};
 		F826700220B7067E00A0EB14 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8139F6698F71C07B436B3CBB /* Pods-ARFrameMetadata.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Y6ZF2U3QJC;
 				INFOPLIST_FILE = ARFrameMetadata/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

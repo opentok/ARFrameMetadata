@@ -11,7 +11,7 @@ import OpenTok
 import MetalKit
 import SceneKit
 
-fileprivate let FIXED_ANNOTATION_DEPTH = 2
+fileprivate let FIXED_ANNOTATION_DEPTH: Float = 2
 fileprivate let CAMERA_DEFAULT_ZFAR = 1000
 
 class SubscriberViewController: UIViewController {
@@ -84,7 +84,7 @@ extension SubscriberViewController: ExampleVideoRenderDelegate {
             cameraNode.eulerAngles.z = arr[5]
             
             cameraNode.camera = SCNCamera()
-            cameraNode.camera?.zFar = CAMERA_DEFAULT_ZFAR
+            cameraNode.camera?.zFar = Double(CAMERA_DEFAULT_ZFAR)
             cameraNode.camera?.zNear = Double(arr[6])
             cameraNode.camera?.fieldOfView = CGFloat(arr[7])
             

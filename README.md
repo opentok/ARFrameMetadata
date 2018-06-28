@@ -1,10 +1,12 @@
-# AR Remote anotation using OpenTok FrameMetadata Api
+# AR Remote anotation using OpenTok FrameMetadata API
+
+![OpenTok Labs](https://d26dzxoao6i3hh.cloudfront.net/items/0U1R0a0e2g1E361H0x3c/Image%202017-11-22%20at%2012.16.38%20PM.png?v=2507a2df)
 
 This iOS application shows a use case where a remote participant can set 3D annotations in the AR view of a publisher.
 
 One of the applications of this sample could be in the insurance sector, where an agent can set annotations in the "world" of the publisher who is streaming a car which has been involved in some kind of accident.
 
-In order to increase the accuracy of the annotations, this sample uses the framemetadata api to embed in each frame the coordinates of the camera that is created in the virtual world of the AR scene of the publisher. That way, when a subscriber clicks on his screen to create an annotation in the world of the publisher, the application will precisely known the position of the publisher.
+In order to increase the accuracy of the annotations, this sample uses the Frame Metadata API to embed the coordinates of the camera that is created in the virtual world of the AR scene of the publisher in each frame. That way, when a subscriber clicks on their screen to create an annotation in the world of the publisher, the application will precisely know the position of the publisher.
 
 ## Running the sample
 
@@ -34,7 +36,7 @@ In this diagram we show a brief schema on how the app works. In the publisher we
 
 In the subscriber side, the frame will be shown. When the subscriber taps the view to create an annotation, the view will capture the x and y position of the touch, and using the 3d camera position of the publisher which is bundled in each frame will calculate the 3d position of the annotation. Once that position is calculated, the subscriber will send a signal to the publisher using the OpenTok SDK with this position of the annotation.
 
-When the publisher receives the signal it adds the annotation ot the AR world, so it can be seen both by the publisher and subscriber.
+When the publisher receives the signal it adds the annotation to the AR world, so it can be seen both by the publisher and subscriber.
 
 ## Code walkthrough
 
