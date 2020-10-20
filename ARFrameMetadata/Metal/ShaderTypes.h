@@ -2,9 +2,6 @@
 //  ShaderTypes.h
 //  ARFrameMetadata
 //
-//  Created by Jerónimo Valli on 9/22/20.
-//  Copyright © 2020 tokbox. All rights reserved.
-//
 
 #ifndef ShaderTypes_h
 #define ShaderTypes_h

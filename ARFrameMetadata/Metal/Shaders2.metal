@@ -2,9 +2,6 @@
 //  Shaders.metal
 //  MetalShaderCamera
 //
-//  Created by Alex Staravoitau on 28/04/2016.
-//  Copyright © 2016 Old Yellow Bricks. All rights reserved.
-//
 
 #include <metal_stdlib>
 using namespace metal;

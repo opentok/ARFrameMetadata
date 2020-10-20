@@ -2,9 +2,6 @@
 //  MetalCameraSession.swift
 //  MetalShaderCamera
 //
-//  Created by Jerónimo Valli on 9/18/20.
-//  Copyright © 2020 tokbox. All rights reserved.
-//
 
 import AVFoundation
 import Metal
