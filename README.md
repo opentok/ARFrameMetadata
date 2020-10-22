@@ -20,19 +20,27 @@ In order to increase the accuracy of the annotations, this sample uses the Frame
 
 You will require two instances of the app running, one for the publisher and another for the subscriber. When the application starts it asks you to select with role will be each device.
 
-When both applications are running, you will see that the AR Scene of the publisher is being streamed to the subscriber, in the subscriber lower part of the screen you will see the camera coordinates that come with each frame. When you tap on the subcriber side, you will see that a annotation (with the shape of a pokeball or a star) will appear in the publisher side in the same position you tapped the screen.
+When both applications are running, you will see that the AR view of the publisher is being streamed to the subscriber, in the subscriber lower part of the screen you will see the camera coordinates that come with each frame. When you tap on the subscriber side, you will see that a annotation (with the shape of a pokeball or a star) will appear in the publisher side in the same position you tapped the screen.
 
 Please note that for the sake of simplicity of the sample, the depth where the annotation is fixed.
 
 ## App Architechture
 
-Since this is an iOS app and we are dealing with AR scenarios, we use ARKit to create the objetcts in the virtual world it creates.
+Since this is an iOS app and we are dealing with different AR scenarios:
 
-As noted above, we use the new [framemetadata API](https://tokbox.com/developer/sdks/ios/reference/Classes/OTVideoFrame.html#//api/name/metadata) that comes with OpenTok 2.14.
+- Metal & MetalKit: this is the implementation by default (MetalVideoCaptureController.swift), the app uses AVFoundation to get device camera view and convert to a Metal Texture to finally publish to the session.
+
+- ARKit: as second option you can modify the code to use ARKit (AROpentokVideoCapturer.swift) to create the objects in the AR world and publish to the session.
+
+- SceneKit: as another option you can use SceneKit (SCNViewVideoCapture.swift) to capture what is rendered on the publisher screen.
 
 ![app diagram](docs/app_diagram.png)
 
-In this diagram we show a brief schema on how the app works. In the publisher we use a ARSCNView which is a SCNKit scene with AR capabilities powered by ARKit. That view will feed with the view of the back camera and the AR Scene to a custom capturer that our Publisher will use to send frames to the subscriber. The custom capturer will bundle in the frame the camera 3d position and rotation in the frame metadata and will send it to the subscriber using the OpenTok sdk.
+In this diagram we show a brief schema on how the app works.
+
+As noted above, we use the new [framemetadata API](https://tokbox.com/developer/sdks/ios/reference/Classes/OTVideoFrame.html#//api/name/metadata) that comes with OpenTok.
+
+In the publisher an AR view of the back camera and an AR object is displayed buffered to a custom capturer that our Publisher will use to send frames to the subscriber. The custom capturer will bundle in the frame the camera 3d position and rotation in the frame metadata and will send it to the subscriber using the OpenTok sdk.
 
 In the subscriber side, the frame will be shown. When the subscriber taps the view to create an annotation, the view will capture the x and y position of the touch, and using the 3d camera position of the publisher which is bundled in each frame will calculate the 3d position of the annotation. Once that position is calculated, the subscriber will send a signal to the publisher using the OpenTok SDK with this position of the annotation.
 
@@ -156,8 +164,6 @@ otSession.signal(withType: "newNode", string: "\(nodePos.x):\(nodePos.y):\(nodeP
 ```
 
 ## Closing comments and references
-
-Usually ARKit is combined with either Scene Kit or Sprite Kit, this sample uses Scene Kit to display 3D Content. You will find the 3d Scenes in `art.scnassets` folder.
 
 If you want to see other uses of ARKit and Opentok, please take a look to our other samples:
 
