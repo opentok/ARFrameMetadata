@@ -13,9 +13,9 @@ import OpenTok
 
 class PublisherViewController: UIViewController, ARSCNViewDelegate {
 
-    @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet var sceneView: ARSCNView?
     
-    var capturer: SCNViewVideoCapture?
+    var capturer: MetalVideoCaptureController?
     var otSession: OTSession?
     var otPublisher: OTPublisher?
     var otSessionDelegate: ViewControllerSessionDelegate?
@@ -26,25 +26,27 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
         super.viewDidLoad()
         
         // Set the view's delegate
-        sceneView.delegate = self
+        sceneView?.delegate = self
         
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
-        sceneView.autoenablesDefaultLighting = true
+        sceneView?.showsStatistics = true
+        sceneView?.autoenablesDefaultLighting = true
         
         // Create a new scene
         let scene = SCNScene(named: "art.scnassets/empty.scn")!
         
         // Set the scene to the view
-        sceneView.scene = scene
-        sceneView.debugOptions = ARSCNDebugOptions.showWorldOrigin
+        sceneView?.scene = scene
+        sceneView?.debugOptions = ARSCNDebugOptions.showWorldOrigin
         
         let markerScene = SCNScene(named: "art.scnassets/marker.scn")!
         starNode = markerScene.rootNode.childNode(withName: "star", recursively: false)!
         ballNode = markerScene.rootNode.childNode(withName: "ball", recursively: false)!
         
-        capturer = SCNViewVideoCapture(sceneView: sceneView)
-        capturer?.delegate = self
+        //capturer = SCNViewVideoCapture(sceneView: sceneView)
+        //capturer?.delegate = self
+        capturer = MetalVideoCaptureController(view: view)
+        
         otSessionDelegate = ViewControllerSessionDelegate(self)
         otSession = OTSession(apiKey: kApiKey, sessionId: kSessionId, delegate: otSessionDelegate)
         let pubSettings = OTPublisherSettings()
@@ -69,8 +71,8 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
     }
     
     fileprivate func deleteAllObjects() {
-        let nodes = sceneView.scene.rootNode.childNodes.filter { return $0.name == "ball" || $0.name == "star" || $0.name == "marker" }
-        nodes.forEach({ node in
+        let nodes = sceneView?.scene.rootNode.childNodes.filter { return $0.name == "ball" || $0.name == "star" || $0.name == "marker" }
+        nodes?.forEach({ node in
             node.removeFromParentNode()
         })
     }
@@ -78,12 +80,12 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let configuration = ARWorldTrackingConfiguration()
-        sceneView.session.run(configuration)
+        sceneView?.session.run(configuration)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        sceneView.session.pause()
+        sceneView?.session.pause()
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
@@ -134,13 +136,13 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
             newNode.simdPosition.y = newNodeY
             newNode.simdPosition.z = newNodeZ
             
-            let z = sceneView.projectPoint(newNode.position).z
-            let p = sceneView.unprojectPoint(SCNVector3(x, y, z))
-            newNode.position = p
+            let z = sceneView?.projectPoint(newNode.position).z
+            let p = sceneView?.unprojectPoint(SCNVector3(x, y, z ?? 0))
+            newNode.position = p ?? SCNVector3Zero
             newNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: CGFloat(Float.pi * 2), z: 0, duration: 3)))
             
-            sceneView.scene.rootNode.addChildNode(newNode)
-            sceneView.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
+            sceneView?.scene.rootNode.addChildNode(newNode)
+            sceneView?.session.add(anchor: ARAnchor(transform: newNode.simdTransform))
             
             // Add line
             let lineNode = SCNNode(geometry: SCNCylinder(radius: 0.005, height: CGFloat(abs(newNode.position.y))))
@@ -153,14 +155,14 @@ class PublisherViewController: UIViewController, ARSCNViewDelegate {
             } else {
                 lineNode.position.y += abs(lineNode.position.y) / 2
             }
-            sceneView.scene.rootNode.addChildNode(lineNode)
+            sceneView?.scene.rootNode.addChildNode(lineNode)
         }
     }
 }
 
 extension PublisherViewController: SCNViewVideoCaptureDelegate {
     func prepare(videoFrame: OTVideoFrame) {
-        let cameraNode = sceneView.scene.rootNode.childNodes.first {
+        let cameraNode = sceneView?.scene.rootNode.childNodes.first {
             $0.camera != nil
         }
         if let node = cameraNode, let cam = node.camera {

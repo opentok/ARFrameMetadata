@@ -1,16 +1,16 @@
 PODS:
-  - OpenTok (2.14.0)
+  - OpenTok (2.18.0)
 
 DEPENDENCIES:
   - OpenTok
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - OpenTok
 
 SPEC CHECKSUMS:
-  OpenTok: f4c0f42fd2e4e4d2682b12dcb94313aa88558e14
+  OpenTok: bf4c81ff741e7976542c61b8f317882f8076eede
 
 PODFILE CHECKSUM: 89d7558e86067e5534316c2e34b9a14a45706d11
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.3

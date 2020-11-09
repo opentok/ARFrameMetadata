@@ -9,6 +9,5 @@
 import Foundation
 
 let kApiKey = ""
-let kToken = ""
 let kSessionId = ""
-
+let kToken = ""
